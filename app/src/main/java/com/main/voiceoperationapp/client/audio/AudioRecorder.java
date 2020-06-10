@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 
 public class AudioRecorder {
 
-    private static String TAG = "VoiceOperationApp";
+    private static String TAG = "VoiceOperationApp:AudioRecorder";
 
     private TargetDataLine microphone;
 

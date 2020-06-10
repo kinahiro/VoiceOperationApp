@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 public class AssistantClient implements StreamObserver<AssistResponse> {
 
-    private static String TAG = "VoiceOperationApp";
+    private static String TAG = "VoiceOperationApp:AssistantClient";
 
     private CountDownLatch finishLatch = new CountDownLatch(1);
 

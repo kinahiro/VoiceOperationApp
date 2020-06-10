@@ -55,7 +55,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity
         implements AuthenticationHelper.Listener, DeviceRegister.Listener{
 
-    private static String TAG = "VoiceOperationApp";
+    private static String TAG = "VoiceOperationApp:MainActivity";
 
     public static final String EXTRA_MESSAGE = "";
     static final int RESULT_SUB_ACTIVITY = 1000;
@@ -312,7 +312,9 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onFinish() {
             // 完了
-            endOfInput();
+            if(editText.getText().toString().length() > 0){
+                endOfInput();
+            }
         }
 
         // インターバルで呼ばれる

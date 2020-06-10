@@ -26,7 +26,7 @@ import java.util.UUID;
 
 public class DeviceRegister {
 
-    private static String TAG = "VoiceOperationApp";
+    private static String TAG = "VoiceOperationApp:DeviceRegister";
 
     // Configuration from typesafe
     private DeviceRegisterConf deviceRegisterConf;
@@ -211,7 +211,7 @@ public class DeviceRegister {
 
 class RegisterDeviceModelTask extends AsyncTask<String, Void, Response<DeviceModel>> {
 
-    static String TAG = "VoiceOperationApp";
+    static String TAG = "VoiceOperationApp:DeviceRegister";
 
     private DeviceInterface deviceInterface;
     private String projectId;
@@ -241,7 +241,7 @@ class RegisterDeviceModelTask extends AsyncTask<String, Void, Response<DeviceMod
 
 class RegisterDeviceTask extends AsyncTask<String, Void, Response<Device>> {
 
-    static String TAG = "VoiceOperationApp";
+    static String TAG = "VoiceOperationApp:DeviceRegister";
 
     private DeviceInterface deviceInterface;
     private String projectId;

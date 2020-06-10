@@ -24,7 +24,7 @@ import static android.os.Looper.getMainLooper;
 
 public class AuthenticationHelper {
 
-    private static String TAG = "VoiceOperationApp";
+    private static String TAG = "VoiceOperationApp:AuthenticationHelper";
     public static String AUTHENTICATION_CODE = "";
 
     final Handler handler = new Handler(getMainLooper());
@@ -216,7 +216,7 @@ public class AuthenticationHelper {
 
 class GetAccessTokenTask extends AsyncTask<String, Void, Response<OAuthCredentials>> {
 
-    static String TAG = "VoiceOperationApp";
+    static String TAG = "VoiceOperationApp:AuthenticationHelper";
 
     private OAuthClient oAuthClient;
 
@@ -251,7 +251,7 @@ class GetAccessTokenTask extends AsyncTask<String, Void, Response<OAuthCredentia
 
 class RefreshAccessTokenTask extends AsyncTask<String, Void, Response<OAuthCredentials>> {
 
-    static String TAG = "VoiceOperationApp";
+    static String TAG = "VoiceOperationApp:AuthenticationHelper";
 
     private OAuthCredentials oAuthCredentials;
 
