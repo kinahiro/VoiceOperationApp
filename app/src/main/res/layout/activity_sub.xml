@@ -31,15 +31,17 @@
 
     <TextView
         android:id="@+id/to_sub"
-        android:layout_width="390dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ブラウザでアプリケーションを許可し、\n認証コードをコピーして入力してください"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="ブラウザでアプリケーションを許可し、認証コードをコピーして入力してください"
         android:textColor="@android:color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/edit_text"
+        app:layout_constraintRight_toRightOf="@+id/edit_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_title"
         app:layout_constraintVertical_bias="0.04" />
@@ -53,7 +55,7 @@
         android:background="#fff"
         android:hint="ここに認証コードを入力してください"
         android:inputType="text"
-        android:textSize="18sp"
+        android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.473"
@@ -70,10 +72,9 @@
         android:gravity="center"
         android:text="OK"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text"
         app:layout_constraintVertical_bias="0.45"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

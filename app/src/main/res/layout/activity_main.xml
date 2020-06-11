@@ -9,8 +9,9 @@
 
     <Button
         android:id="@+id/startRecording_Button"
-        android:layout_width="215dp"
+        android:layout_width="match_parent"
         android:layout_height="55dp"
+        android:layout_margin="10dp"
         android:layout_weight="1"
         android:text="start"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,15 +21,14 @@
 
     <EditText
         android:id="@+id/transcription_TextView"
-        android:layout_width="350dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:layout_weight="1"
         android:hint="ここに入力音声が表示されます"
         android:inputType="textMultiLine"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/startRecording_Button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.094" />
@@ -36,8 +36,9 @@
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="350dp"
-        android:layout_height="400dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_margin="10dp"
         android:isScrollContainer="true"
         app:layout_constraintBottom_toTopOf="@+id/startRecording_Button"
         app:layout_constraintEnd_toEndOf="parent"
