@@ -1,8 +1,6 @@
 package com.main.voiceoperationapp.client.audio;
 
-import android.content.Intent;
 import android.util.Log;
-import android.widget.EditText;
 
 import com.main.voiceoperationapp.config.AudioConf;
 import com.main.voiceoperationapp.exception.AudioException;
@@ -12,10 +10,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class AudioRecorder {
 

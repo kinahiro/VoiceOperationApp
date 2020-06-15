@@ -1,17 +1,12 @@
 package com.main.voiceoperationapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -19,15 +14,11 @@ import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.assistant.embedded.v1alpha2.DeviceAction;
 import com.main.voiceoperationapp.api.AssistantClient;
 import com.main.voiceoperationapp.authentication.AuthenticationHelper;
 import com.main.voiceoperationapp.client.audio.AudioPlayer;
@@ -47,8 +38,6 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -112,25 +101,8 @@ public class MainActivity extends AppCompatActivity
         try {
             main();
         } catch (AuthenticationException ex) {
+            ex.printStackTrace();
             Log.e(TAG, ex.toString());
-            ex.printStackTrace(new PrintWriter(new Writer() {
-                private final StringBuffer buffer = new StringBuffer();
-
-                @Override
-                public void write(char[] cs, int offset, int length) {
-                    buffer.append(cs, offset, length);
-                }
-
-                @Override
-                public void flush() {
-                    Log.e("Exception", buffer.toString());
-                    buffer.setLength(0);
-                }
-
-                @Override
-                public void close() {
-                }
-            }, true));
         } catch (AudioException ex) {
             ex.printStackTrace();
             Log.e(TAG, ex.toString());

@@ -1,14 +1,10 @@
 package com.main.voiceoperationapp.device;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
 import com.google.gson.stream.JsonReader;
-import com.main.voiceoperationapp.MainActivity;
 import com.main.voiceoperationapp.config.DeviceRegisterConf;
 import com.main.voiceoperationapp.exception.DeviceRegisterException;
 import okhttp3.OkHttpClient;

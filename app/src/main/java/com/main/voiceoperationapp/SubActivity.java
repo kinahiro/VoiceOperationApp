@@ -17,7 +17,6 @@ import android.widget.EditText;
 import com.main.voiceoperationapp.authentication.AuthenticationHelper;
 import com.main.voiceoperationapp.config.AuthenticationConf;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;
 
 import java.io.File;
