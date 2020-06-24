@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 public class DeviceRegister {
 
@@ -113,11 +114,27 @@ public class DeviceRegister {
 
         try {
             Log.i(TAG,"Creating device model");
-            RegisterDeviceModelTask registerDeviceModelTask = new RegisterDeviceModelTask(deviceInterface, projectId, deviceModel);
-            registerDeviceModelTask.execute();
-            //Response<DeviceModel> response = deviceInterface.registerModel(projectId, deviceModel).execute();
+            final CountDownLatch latch = new CountDownLatch(1);
+            new AsyncTask<String, Void, Response<DeviceModel>>() {
+                @Override
+                protected Response<DeviceModel> doInBackground(String... params) {
+                    try {
+                        DeviceRegister.responseDeviceModel
+                                = deviceInterface.registerModel(projectId, deviceModel).execute();
+                        Log.i(TAG,"デバイスモデルの登録が正常に終了しました");
+                        latch.countDown();
+                        return DeviceRegister.responseDeviceModel;
+                    } catch (Exception ex)
+                    {
+                        Log.e(TAG,"Could not register DeviceModel : " + ex.toString());
+                        latch.countDown();
+                        return null;
+                    }
+                }
+            }.execute();;
+
             try {
-                Thread.sleep(2000);
+                latch.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -154,15 +171,31 @@ public class DeviceRegister {
 
         try {
             Log.i(TAG,"Creating device instance");
-            //Response<Device> response = deviceInterface.registerDevice(projectId, device).execute();
-            RegisterDeviceTask registerDeviceTask = new RegisterDeviceTask(deviceInterface, projectId, device);
-            registerDeviceTask.execute();
+            final CountDownLatch latch = new CountDownLatch(1);
+            new AsyncTask<String, Void, Response<Device>>() {
+                @Override
+                protected Response<Device> doInBackground(String... params) {
+                    try {
+                        DeviceRegister.responseDevice
+                                = deviceInterface.registerDevice(projectId, device).execute();
+                        Log.i(TAG,"デバイスの登録が正常に終了しました");
+                        latch.countDown();
+                        return DeviceRegister.responseDevice;
+                    } catch (Exception ex)
+                    {
+                        Log.e(TAG,"Could not register Device : " + ex.toString());
+                        latch.countDown();
+                        return null;
+                    }
+                }
+            }.execute();;
 
             try {
-                Thread.sleep(3000);
+                latch.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             if (responseDevice.isSuccessful() && responseDevice.body() != null) {
                 String filePath = deviceRegisterConf.getDeviceInstanceFilePath();
                 filePath = mListener.createFile(filePath);
@@ -199,68 +232,7 @@ public class DeviceRegister {
         return Optional.empty();
     }
 
-
     public interface Listener {
         String createFile(String fileName);
-    }
-}
-
-class RegisterDeviceModelTask extends AsyncTask<String, Void, Response<DeviceModel>> {
-
-    static String TAG = "VoiceOperationApp:DeviceRegister";
-
-    private DeviceInterface deviceInterface;
-    private String projectId;
-    private DeviceModel deviceModel;
-
-    public RegisterDeviceModelTask(DeviceInterface dInterface, String pId, DeviceModel model){
-        deviceInterface = dInterface;
-        projectId = pId;
-        deviceModel = model;
-    }
-
-    protected Response<DeviceModel> doInBackground(String... codes) {
-        try {
-            DeviceRegister.responseDeviceModel
-                    = deviceInterface.registerModel(projectId, deviceModel).execute();
-            return DeviceRegister.responseDeviceModel;
-        } catch (Exception ex)
-        {
-            Log.e(TAG,"Could not register DeviceModel : " + ex.toString());
-            return null;
-        }
-    }
-
-    protected void onPostExecute(Response<DeviceModel> result) {
-    }
-}
-
-class RegisterDeviceTask extends AsyncTask<String, Void, Response<Device>> {
-
-    static String TAG = "VoiceOperationApp:DeviceRegister";
-
-    private DeviceInterface deviceInterface;
-    private String projectId;
-    private Device device;
-
-    public RegisterDeviceTask(DeviceInterface dInterface, String pId, Device dev){
-        deviceInterface = dInterface;
-        projectId = pId;
-        device = dev;
-    }
-
-    protected Response<Device> doInBackground(String... codes) {
-        try {
-            DeviceRegister.responseDevice
-                    = deviceInterface.registerDevice(projectId, device).execute();
-            return DeviceRegister.responseDevice;
-        } catch (Exception ex)
-        {
-            Log.e(TAG,"Could not register Device : " + ex.toString());
-            return null;
-        }
-    }
-
-    protected void onPostExecute(Response<DeviceModel> result) {
     }
 }

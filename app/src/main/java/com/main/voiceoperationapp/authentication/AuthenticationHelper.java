@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 
 import static android.os.Looper.getMainLooper;
 
@@ -119,9 +120,35 @@ public class AuthenticationHelper {
     public Optional<OAuthCredentials> refreshAccessToken() throws AuthenticationException {
         Log.i(TAG,"Refreshing access token");
         try {
-            // Network処理
-            RefreshAccessTokenTask refAccessTokenTask = new RefreshAccessTokenTask(authenticationConf, oAuthClient, oAuthCredentials);
-            refAccessTokenTask.execute();
+            final CountDownLatch latch = new CountDownLatch(1);
+            new AsyncTask<String, Void, Response<OAuthCredentials>>() {
+                @Override
+                protected Response<OAuthCredentials> doInBackground(String... code) {
+                    try {
+                        AuthenticationHelper.response = oAuthClient.refreshAccessToken(
+                                oAuthCredentials.getRefreshToken(),
+                                authenticationConf.getClientId(),
+                                authenticationConf.getClientSecret(),
+                                "refresh_token")
+                                .execute();
+                        Log.i(TAG, "リフレッシュトークンを更新しました");
+                        //非同期処理
+                        latch.countDown();
+                        return AuthenticationHelper.response;
+                    } catch (Exception e) {
+                        Log.e(TAG, "Could not refresh access token : " + e.toString());
+                        //非同期処理
+                        latch.countDown();
+                        return null;
+                    }
+                }
+            }.execute();
+
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             if (response.isSuccessful()) {
                 Log.i(TAG,"New Access Token: " + response.body().getAccessToken());
@@ -131,6 +158,7 @@ public class AuthenticationHelper {
                 saveCredentials();
                 return Optional.of(oAuthCredentials);
             } else {
+                Log.i(TAG,"アクセストークンを更新しませんでした");
                 return Optional.empty();
             }
         } catch (Exception e) {
@@ -142,13 +170,32 @@ public class AuthenticationHelper {
         String code = AUTHENTICATION_CODE;
         Log.d(TAG,"Authentication code : " + code);
 
-
-        // Network処理
-        GetAccessTokenTask getAccessTokenTask = new GetAccessTokenTask(authenticationConf, oAuthClient);
-        getAccessTokenTask.execute(code);
+        final CountDownLatch latch = new CountDownLatch(1);
+        new AsyncTask<String, Void, Response<OAuthCredentials>>() {
+            @Override
+            protected Response<OAuthCredentials> doInBackground(String... codes) {
+                try {
+                    AuthenticationHelper.response = oAuthClient.getAccessToken(
+                            AUTHENTICATION_CODE,
+                            authenticationConf.getClientId(),
+                            authenticationConf.getClientSecret(),
+                            authenticationConf.getCodeRedirectUri(),
+                            "authorization_code")
+                            .execute();
+                    //非同期処理
+                    latch.countDown();
+                    return AuthenticationHelper.response;
+                } catch (Exception e) {
+                    Log.e(TAG,"Could not get access token : " + e.toString());
+                    //非同期処理
+                    latch.countDown();
+                    return null;
+                }
+            }
+        }.execute();
 
         try {
-            Thread.sleep(5000);
+            latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -211,77 +258,6 @@ public class AuthenticationHelper {
         void startBrowser(Intent intent);
         String createFile(String fileName);
         boolean isAppInstalled(String appPackage);
-    }
-}
-
-class GetAccessTokenTask extends AsyncTask<String, Void, Response<OAuthCredentials>> {
-
-    static String TAG = "VoiceOperationApp:AuthenticationHelper";
-
-    private OAuthClient oAuthClient;
-
-    AuthenticationConf authenticationConf;
-
-    public GetAccessTokenTask(AuthenticationConf config, OAuthClient Client){
-        authenticationConf = config;
-        oAuthClient = Client;
-    }
-
-    protected Response<OAuthCredentials> doInBackground(String... codes) {
-        try {
-            String code = new String(codes[0]);
-            AuthenticationHelper.response = oAuthClient.getAccessToken(
-                    code,
-                    authenticationConf.getClientId(),
-                    authenticationConf.getClientSecret(),
-                    authenticationConf.getCodeRedirectUri(),
-                    "authorization_code")
-                    .execute();
-            return AuthenticationHelper.response;
-        } catch (Exception e)
-        {
-            Log.e(TAG,"Could not get access token : " + e.toString());
-            return null;
-        }
-    }
-
-    protected void onPostExecute(Response<OAuthCredentials> result) {
-    }
-}
-
-class RefreshAccessTokenTask extends AsyncTask<String, Void, Response<OAuthCredentials>> {
-
-    static String TAG = "VoiceOperationApp:AuthenticationHelper";
-
-    private OAuthCredentials oAuthCredentials;
-
-    private OAuthClient oAuthClient;
-
-    private AuthenticationConf authenticationConf;
-
-    public RefreshAccessTokenTask(AuthenticationConf config, OAuthClient Client, OAuthCredentials Credentials){
-        authenticationConf = config;
-        oAuthClient = Client;
-        oAuthCredentials = Credentials;
-    }
-
-    protected Response<OAuthCredentials> doInBackground(String... codes) {
-        try {
-            AuthenticationHelper.response = oAuthClient.refreshAccessToken(
-                    oAuthCredentials.getRefreshToken(),
-                    authenticationConf.getClientId(),
-                    authenticationConf.getClientSecret(),
-                    "refresh_token")
-                    .execute();
-            return AuthenticationHelper.response;
-        } catch (Exception e)
-        {
-            Log.e(TAG,"Could not refresh access token : " + e.toString());
-            return null;
-        }
-    }
-
-    protected void onPostExecute(Response<OAuthCredentials> result) {
     }
 }
 

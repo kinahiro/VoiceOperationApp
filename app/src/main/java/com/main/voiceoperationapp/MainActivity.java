@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity
             checkRefreshNeed();
             registerDevice();
             buildClient();
-            mainLoop();
             speech();
         }
         else{
@@ -187,24 +186,6 @@ public class MainActivity extends AppCompatActivity
                 deviceRegister.getDeviceModel(), deviceRegister.getDevice(), ioConf);
     }
 
-    // Main Loop
-    private void mainLoop(){
-        // Build the objects to record and play the conversation
-
-        if (authenticationHelper.expired()) {
-            try {
-                authenticationHelper
-                        .refreshAccessToken()
-                        .orElseThrow(() -> new AuthenticationException("Error refreshing access token"));
-            } catch (AuthenticationException e) {
-                e.printStackTrace();
-            }
-
-            // Update the token for the assistant client
-            assistantClient.updateCredentials(authenticationHelper.getOAuthCredentials());
-        }
-    }
-
     // editTexの入力確認
     public void readText(){
         editText.addTextChangedListener(new TextWatcher() {
@@ -232,6 +213,19 @@ public class MainActivity extends AppCompatActivity
 
     // editTextの入力終了検知後の処理
     private void endOfInput(){
+        // アクセストークン更新
+        if (authenticationHelper.expired()) {
+            try {
+                authenticationHelper
+                        .refreshAccessToken()
+                        .orElseThrow(() -> new AuthenticationException("Error refreshing access token"));
+            } catch (AuthenticationException e) {
+                e.printStackTrace();
+            }
+
+            // Update the token for the assistant client
+            assistantClient.updateCredentials(authenticationHelper.getOAuthCredentials());
+        }
 
         audioPlayer = new AudioPlayer(audioConf);
 
@@ -246,11 +240,11 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(300);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         if( assistantClient.getTextResponse() != null){
             Log.i(TAG,assistantClient.getTextResponse());
@@ -354,7 +348,6 @@ public class MainActivity extends AppCompatActivity
                 checkRefreshNeed();
                 registerDevice();
                 buildClient();
-                mainLoop();
                 speech();
             }
         }
